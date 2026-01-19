@@ -9,15 +9,20 @@ project(incfontdisc
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(incfontdisc_BUILD_SHARED_LIB "Build a shared version of incfontdisc" ${BUILD_SHARED_LIBS})
+option(incfontdisc_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ON)
 
 option(incfontdisc_BUILD_DEMOS "Build demos for incfontdisc" ${PROJECT_IS_TOP_LEVEL})
-option(incfontdisc_BUILD_SHARED_LIB "Build a shared version of incfontdisc" ${BUILD_SHARED_LIBS})
+option(incfontdisc_BUILD_TESTS "Build test executables for incplot-lib" ${PROJECT_IS_TOP_LEVEL})
 
 
 #####################################################################
 ### Staging ###
 #####################################################################
-
+include(cmake/StageOutputs.cmake)
+if(incfontdisc_STAGE_OUTPUTS)
+    stageOutputDirsFor(incfontdisc)
+endif()
 
 
 ########################################################
@@ -32,7 +37,7 @@ else()
 endif()
 add_library(incfontdisc::incfontdisc ALIAS incfontdisc)
 
-# target_sources(incfontdisc PRIVATE ........)
+target_sources(incfontdisc PRIVATE src/incfontdisc.cpp)
 target_sources(incfontdisc
   PUBLIC
   FILE_SET pub_headers
