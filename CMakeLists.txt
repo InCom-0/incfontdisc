@@ -76,8 +76,8 @@ if(incfontdisc_BUILD_SHARED_LIB)
         VISIBILITY_INLINES_HIDDEN YES
     )
     target_compile_definitions(incfontdisc
-        PRIVATE incfontdisc_EXPORTS
-        PUBLIC incfontdisc_SHARED
+        PRIVATE INCFONTDISC_EXPORTS
+        PUBLIC INCFONTDISC_SHARED
     )
 endif()
 

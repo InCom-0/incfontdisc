@@ -11,9 +11,18 @@ public:
     std::expected<std::vector<FontDescriptor>, Error>
     list_fonts();
     std::expected<std::vector<FontDescriptor>, Error>
+    refresh_fonts();
+    std::expected<std::vector<FontDescriptor>, Error>
     match_fonts(const FontQuery &query);
     std::expected<ByteBuffer, Error>
     load_font_data(const FontId &id);
+
+private:
+    std::expected<std::vector<FontDescriptor>, Error>
+    enumerate_fonts();
+
+    static thread_local std::vector<FontDescriptor> cached_fonts_;
+    static thread_local bool                      cache_valid_;
 };
 
 using Backend = FontconfigBackend;
@@ -25,9 +34,18 @@ public:
     std::expected<std::vector<FontDescriptor>, Error>
     list_fonts();
     std::expected<std::vector<FontDescriptor>, Error>
+    refresh_fonts();
+    std::expected<std::vector<FontDescriptor>, Error>
     match_fonts(const FontQuery &query);
     std::expected<ByteBuffer, Error>
     load_font_data(const FontId &id);
+
+private:
+    std::expected<std::vector<FontDescriptor>, Error>
+    enumerate_fonts();
+
+    static thread_local std::vector<FontDescriptor> cached_fonts_;
+    static thread_local bool                      cache_valid_;
 };
 
 using Backend = DWriteBackend;
@@ -38,6 +56,10 @@ class BackendUnavailable final {
 public:
     std::expected<std::vector<FontDescriptor>, Error>
     list_fonts() {
+        return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
+    }
+    std::expected<std::vector<FontDescriptor>, Error>
+    refresh_fonts() {
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
     }
     std::expected<std::vector<FontDescriptor>, Error>

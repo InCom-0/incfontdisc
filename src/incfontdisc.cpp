@@ -9,6 +9,11 @@ list_fonts() {
 }
 
 std::expected<std::vector<FontDescriptor>, Error>
+refresh_fonts() {
+    return detail::backend_instance().refresh_fonts();
+}
+
+std::expected<std::vector<FontDescriptor>, Error>
 match_fonts(const FontQuery &query) {
     return detail::backend_instance().match_fonts(query);
 }

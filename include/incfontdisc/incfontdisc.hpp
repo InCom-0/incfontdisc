@@ -6,45 +6,68 @@
 #include <string>
 #include <vector>
 
+
+#if defined(INCFONTDISC_SHARED)
+#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(INCFONTDISC_EXPORTS)
+#define INCFONTDISC_API __declspec(dllexport)
+#else
+#define INCFONTDISC_API __declspec(dllimport)
+#endif
+#else
+#define INCFONTDISC_API __attribute__((visibility("default")))
+#endif
+
+#else
+// Static library
+#define INCFONTDISC_API
+#endif
+
+
 namespace incfontdisc {
 
 enum class ErrorCode {
-	BackendUnavailable,
-	NotImplemented,
-	InvalidArgument,
-	SystemError
+    BackendUnavailable,
+    NotImplemented,
+    InvalidArgument,
+    SystemError
 };
 
-struct Error {
-	ErrorCode code{};
-	std::string message{};
+struct INCFONTDISC_API Error {
+    ErrorCode   code{};
+    std::string message{};
 };
 
-struct FontId {
-	std::string value{};
+struct INCFONTDISC_API FontId {
+    std::string value{};
 };
 
-struct FontDescriptor {
-	FontId id{};
-	std::string family{};
-	std::string style{};
-	int weight = 400;
-	int stretch = 100;
-	bool italic = false;
+struct INCFONTDISC_API FontDescriptor {
+    FontId      id{};
+    std::string family{};
+    std::string style{};
+    int         weight  = 400;
+    int         stretch = 100;
+    bool        italic  = false;
 };
 
-struct FontQuery {
-	std::optional<std::string> family{};
-	std::optional<std::string> style{};
-	std::optional<int> weight{};
-	std::optional<int> stretch{};
-	std::optional<bool> italic{};
+struct INCFONTDISC_API FontQuery {
+    std::optional<std::string> family{};
+    std::optional<std::string> style{};
+    std::optional<int>         weight{};
+    std::optional<int>         stretch{};
+    std::optional<bool>        italic{};
 };
 
 using ByteBuffer = std::vector<std::byte>;
 
-std::expected<std::vector<FontDescriptor>, Error> list_fonts();
-std::expected<std::vector<FontDescriptor>, Error> match_fonts(const FontQuery &query);
-std::expected<ByteBuffer, Error> load_font_data(const FontId &id);
+INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
+                list_fonts();
+INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
+                refresh_fonts();
+INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
+                match_fonts(const FontQuery &query);
+INCFONTDISC_API std::expected<ByteBuffer, Error>
+                load_font_data(const FontId &id);
 
 } // namespace incfontdisc
