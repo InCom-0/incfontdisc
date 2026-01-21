@@ -8,7 +8,7 @@ list_fonts() {
     return detail::backend_instance().list_fonts();
 }
 
-std::expected<std::vector<FontDescriptor>, Error>
+std::expected<void, Error>
 refresh_fonts() {
     return detail::backend_instance().refresh_fonts();
 }

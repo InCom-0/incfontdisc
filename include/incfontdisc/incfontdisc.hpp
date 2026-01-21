@@ -63,7 +63,7 @@ using ByteBuffer = std::vector<std::byte>;
 
 INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
                 list_fonts();
-INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
+INCFONTDISC_API std::expected<void, Error>
                 refresh_fonts();
 INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
                 match_fonts(const FontQuery &query);

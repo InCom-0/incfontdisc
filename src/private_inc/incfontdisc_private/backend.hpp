@@ -10,7 +10,7 @@ class FontconfigBackend final {
 public:
     std::expected<std::vector<FontDescriptor>, Error>
     list_fonts();
-    std::expected<std::vector<FontDescriptor>, Error>
+    std::expected<void, Error>
     refresh_fonts();
     std::expected<std::vector<FontDescriptor>, Error>
     match_fonts(const FontQuery &query);
@@ -33,7 +33,7 @@ class DWriteBackend final {
 public:
     std::expected<std::vector<FontDescriptor>, Error>
     list_fonts();
-    std::expected<std::vector<FontDescriptor>, Error>
+    std::expected<void, Error>
     refresh_fonts();
     std::expected<std::vector<FontDescriptor>, Error>
     match_fonts(const FontQuery &query);
@@ -58,7 +58,7 @@ public:
     list_fonts() {
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
     }
-    std::expected<std::vector<FontDescriptor>, Error>
+    std::expected<void, Error>
     refresh_fonts() {
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
     }

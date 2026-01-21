@@ -101,17 +101,22 @@ FontconfigBackend::list_fonts() {
     if (cache_valid_) {
         return cached_fonts_;
     }
-    return refresh_fonts();
+    auto refreshed = refresh_fonts();
+    if (!refreshed) {
+        return std::unexpected(refreshed.error());
+    }
+    return cached_fonts_;
 }
 
-std::expected<std::vector<FontDescriptor>, Error>
+std::expected<void, Error>
 FontconfigBackend::refresh_fonts() {
     auto enumerated = enumerate_fonts();
-    if (enumerated) {
-        cached_fonts_ = *enumerated;
-        cache_valid_  = true;
+    if (!enumerated) {
+        return std::unexpected(enumerated.error());
     }
-    return enumerated;
+    cached_fonts_ = *enumerated;
+    cache_valid_  = true;
+    return {};
 }
 
 std::expected<std::vector<FontDescriptor>, Error>
