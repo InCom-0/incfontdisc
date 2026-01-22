@@ -73,7 +73,6 @@ set_target_properties(incfontdisc PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 if(incfontdisc_BUILD_SHARED_LIB)
     set_target_properties(incfontdisc PROPERTIES
         CXX_VISIBILITY_PRESET hidden
-        VISIBILITY_INLINES_HIDDEN YES
     )
     target_compile_definitions(incfontdisc
         PRIVATE INCFONTDISC_EXPORTS

@@ -22,7 +22,7 @@ private:
     enumerate_fonts();
 
     static thread_local std::vector<FontDescriptor> cached_fonts_;
-    static thread_local bool                      cache_valid_;
+    static thread_local bool                        cache_valid_;
 };
 
 using Backend = FontconfigBackend;
@@ -45,7 +45,7 @@ private:
     enumerate_fonts();
 
     static thread_local std::vector<FontDescriptor> cached_fonts_;
-    static thread_local bool                      cache_valid_;
+    static thread_local bool                        cache_valid_;
 };
 
 using Backend = DWriteBackend;
