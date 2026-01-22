@@ -13,7 +13,7 @@ refresh_fonts() {
     return detail::backend_instance().refresh_fonts();
 }
 
-std::expected<std::vector<FontDescriptor>, Error>
+std::expected<std::vector<FontMatch>, Error>
 match_fonts(const FontQuery &query) {
     return detail::backend_instance().match_fonts(query);
 }

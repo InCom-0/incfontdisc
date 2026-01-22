@@ -51,6 +51,13 @@ struct INCFONTDISC_API FontDescriptor {
     bool        italic  = false;
 };
 
+struct INCFONTDISC_API FontMatch {
+    FontDescriptor font{};
+    float          family_score = 0.0f;
+    float          face_score   = 0.0f;
+    float          score        = 0.0f;
+};
+
 struct INCFONTDISC_API FontQuery {
     std::optional<std::string> family{};
     std::optional<std::string> style{};
@@ -65,7 +72,7 @@ INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
                 list_fonts();
 INCFONTDISC_API std::expected<void, Error>
                 refresh_fonts();
-INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
+INCFONTDISC_API std::expected<std::vector<FontMatch>, Error>
                 match_fonts(const FontQuery &query);
 INCFONTDISC_API std::expected<ByteBuffer, Error>
                 load_font_data(const FontId &id);
