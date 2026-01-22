@@ -273,7 +273,7 @@ FontconfigBackend::enumerate_fonts() {
     return fonts;
 }
 
-std::expected<std::vector<FontMatch>, Error>
+std::expected<FontMatch, Error>
 FontconfigBackend::match_fonts(const FontQuery &query) {
     if (FcInit() == FcFalse) {
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "fontconfig failed to initialize"});

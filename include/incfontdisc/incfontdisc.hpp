@@ -30,6 +30,7 @@ enum class ErrorCode {
     BackendUnavailable,
     NotImplemented,
     InvalidArgument,
+    NoFontsFound,
     SystemError
 };
 
@@ -55,7 +56,6 @@ struct INCFONTDISC_API FontMatch {
     FontDescriptor font{};
     float          family_score = 0.0f;
     float          face_score   = 0.0f;
-    float          score        = 0.0f;
 };
 
 struct INCFONTDISC_API FontQuery {
@@ -72,7 +72,7 @@ INCFONTDISC_API std::expected<std::vector<FontDescriptor>, Error>
                 list_fonts();
 INCFONTDISC_API std::expected<void, Error>
                 refresh_fonts();
-INCFONTDISC_API std::expected<std::vector<FontMatch>, Error>
+INCFONTDISC_API std::expected<FontMatch, Error>
                 match_fonts(const FontQuery &query);
 INCFONTDISC_API std::expected<ByteBuffer, Error>
                 load_font_data(const FontId &id);
