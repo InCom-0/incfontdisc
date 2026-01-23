@@ -13,7 +13,7 @@ public:
     std::expected<void, Error>
     refresh_fonts();
     std::expected<FontMatch, Error>
-    match_fonts(const FontQuery &query);
+    match_fonts(FontQuery query);
     std::expected<ByteBuffer, Error>
     load_font_data(const FontId &id);
 
@@ -33,7 +33,7 @@ public:
     std::expected<void, Error>
     refresh_fonts();
     std::expected<FontMatch, Error>
-    match_fonts(const FontQuery &query);
+    match_fonts(FontQuery query);
     std::expected<ByteBuffer, Error>
     load_font_data(const FontId &id);
 
@@ -57,7 +57,7 @@ public:
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
     }
     std::expected<FontMatch, Error>
-    match_fonts(const FontQuery &) {
+    match_fonts(FontQuery) {
         return std::unexpected(Error{ErrorCode::BackendUnavailable, "No backend configured"});
     }
     std::expected<ByteBuffer, Error>

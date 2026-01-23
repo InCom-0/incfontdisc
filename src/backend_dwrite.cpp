@@ -383,7 +383,7 @@ DWriteBackend::enumerate_fonts() {
 }
 
 std::expected<FontMatch, Error>
-DWriteBackend::match_fonts(const FontQuery &query) {
+DWriteBackend::match_fonts(FontQuery query) {
     if (! query.family) { return std::unexpected(Error{ErrorCode::InvalidArgument, "FontQuery.family must be set"}); }
 
     auto factory = get_factory();
@@ -439,6 +439,7 @@ DWriteBackend::match_fonts(const FontQuery &query) {
             Error{ErrorCode::NoFontsFound, "No fonts found on the system, this should be impossible."});
     }
 
+    if (! query.style) { query.style = "Regular"; }
     if (best_family) {
         const UINT32 font_count = best_family->GetFontCount();
         for (UINT32 j = 0; j < font_count; ++j) {
@@ -460,11 +461,10 @@ DWriteBackend::match_fonts(const FontQuery &query) {
         }
     }
 
-    FontQuery effective_query = query;
-    if (! effective_query.style) { effective_query.style = "Regular"; }
-    if (! effective_query.weight) { effective_query.weight = 400; }
-    if (! effective_query.stretch) { effective_query.stretch = 100; }
-    if (! effective_query.italic) { effective_query.italic = false; }
+
+    if (! query.weight) { query.weight = 400; }
+    if (! query.stretch) { query.stretch = 100; }
+    if (! query.italic) { query.italic = false; }
 
 
     FontMatch res_match{.family_score = best_family_score, .face_score = 0.0f};
@@ -477,7 +477,7 @@ DWriteBackend::match_fonts(const FontQuery &query) {
             auto descriptor = descriptor_from_font(factory.Get(), font.Get(), best_family_name);
             if (! descriptor) { continue; }
 
-            const float score = face_score(*descriptor, effective_query);
+            const float score = face_score(*descriptor, query);
             if (score > res_match.face_score) {
                 res_match.font       = std::move(*descriptor);
                 res_match.face_score = score;
