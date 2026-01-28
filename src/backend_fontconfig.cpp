@@ -173,11 +173,14 @@ descriptor_from_pattern(FcPattern *font) {
 std::expected<ByteBuffer, Error>
 read_file_bytes(const std::string &path) {
     std::error_code ec;
-    if (!std::filesystem::exists(std::filesystem::u8path(path), ec)) {
+    const auto      fs_path = std::filesystem::path(std::u8string(
+        reinterpret_cast<const char8_t *>(path.data()),
+        reinterpret_cast<const char8_t *>(path.data() + path.size())));
+    if (!std::filesystem::exists(fs_path, ec)) {
         return std::unexpected(Error{ErrorCode::InvalidArgument, "Font file does not exist"});
     }
 
-    std::ifstream stream(std::filesystem::u8path(path), std::ios::binary);
+    std::ifstream stream(fs_path, std::ios::binary);
     if (!stream) {
         return std::unexpected(Error{ErrorCode::SystemError, "Failed to open font file"});
     }
