@@ -333,7 +333,8 @@ FontconfigBackend::match_fonts(FontQuery query) {
 
     if (best_family_norm.empty()) {
         FcFontSetDestroy(font_set);
-        return std::vector<FontMatch>{};
+        return std::unexpected(
+            Error{ErrorCode::NoFontsFound, "No fonts found on the system, this should be impossible."});
     }
 
     std::vector<FcPattern *> best_family_fonts;
@@ -354,7 +355,7 @@ FontconfigBackend::match_fonts(FontQuery query) {
         best_family_fonts.push_back(font);
     }
 
-    std::vector<FontMatch> exact_matches;
+    if (!query.style) { query.style = "Regular"; }
     for (auto *font : best_family_fonts) {
         auto descriptor = descriptor_from_pattern(font);
         if (!descriptor) {
@@ -367,54 +368,31 @@ FontconfigBackend::match_fonts(FontQuery query) {
         if (query.stretch && descriptor->stretch != *query.stretch) { exact = false; }
         if (query.italic && descriptor->italic != *query.italic) { exact = false; }
         if (exact) {
-            FontMatch match{};
-            match.font         = std::move(*descriptor);
-            match.family_score = best_family_score;
-            match.face_score   = 1.0f;
-            match.score        = 0.5f * (match.family_score + match.face_score);
-            exact_matches.push_back(std::move(match));
+            FcFontSetDestroy(font_set);
+            return FontMatch{.font = std::move(*descriptor), .family_score = best_family_score, .face_score = 1.0f};
         }
     }
 
-    if (!exact_matches.empty()) {
-        FcFontSetDestroy(font_set);
-        return exact_matches;
-    }
+    if (!query.weight) { query.weight = 400; }
+    if (!query.stretch) { query.stretch = 100; }
+    if (!query.italic) { query.italic = false; }
 
-    FontQuery effective_query = query;
-    if (!effective_query.style) { effective_query.style = "Regular"; }
-    if (!effective_query.weight) { effective_query.weight = 400; }
-    if (!effective_query.stretch) { effective_query.stretch = 100; }
-    if (!effective_query.italic) { effective_query.italic = false; }
-
-    float best_face_score = 0.0f;
-    std::vector<FontMatch> matches;
+    FontMatch res_match{.family_score = best_family_score, .face_score = 0.0f};
     for (auto *font : best_family_fonts) {
         auto descriptor = descriptor_from_pattern(font);
         if (!descriptor) {
             continue;
         }
 
-        const float score = face_score(*descriptor, effective_query);
-        if (score > best_face_score) {
-            best_face_score = score;
-            matches.clear();
-        }
-        if (score == best_face_score) {
-            FontMatch match{};
-            match.font         = std::move(*descriptor);
-            match.family_score = best_family_score;
-            match.face_score   = score;
-            match.score        = 0.5f * (match.family_score + match.face_score);
-            matches.push_back(std::move(match));
+        const float score = face_score(*descriptor, query);
+        if (score > res_match.face_score) {
+            res_match.font       = std::move(*descriptor);
+            res_match.face_score = score;
         }
     }
 
     FcFontSetDestroy(font_set);
-    std::sort(matches.begin(), matches.end(), [](const FontMatch &a, const FontMatch &b) {
-        return a.score > b.score;
-    });
-    return matches;
+    return res_match;
 }
 
 std::expected<ByteBuffer, Error>
