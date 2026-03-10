@@ -1,10 +1,32 @@
-# detect_stdlib.cmake
+#=============================================================================
+# StdlibQuery.cmake
+#
+# 1. Tries to compile three different tiny source files to find out what
+#    standard library is being used
+#    (this can be useful in other places in CMake, where one might depend
+#    on the platform being used and not just the compiler)
+#
+# Usage:
+#   include(StdlibQuery.cmake)
+##
+# This will define:
+#   USING_LIBSTDCXX
+#   USING_LIBCXX
+#   USING_MSVC_STL
+#
+#   Note that only one of the above will be set to truthy value. The remaining two will be false.
+#   Triggers FATAL_ERROR on configure should more than one of the above evaluate to truthy value.
+#
+#=============================================================================
+
+# StdlibQuery.cmake
 
 get_property(__STDLIB_ALREADY_RUN GLOBAL PROPERTY STDLIB_DETECTED SET)
 if(__STDLIB_ALREADY_RUN)
     unset(__STDLIB_ALREADY_RUN)
     return()
 endif()
+
 
 include(CheckCXXSourceCompiles)
 
@@ -68,6 +90,15 @@ elseif(__STDLIB_COUNT GREATER 1)
         "  MSVC STL   = ${USING_MSVC_STL}\n"
         "Please report this configuration as a bug."
     )
+endif()
+
+# ---- Post message about the result
+if(USING_LIBSTDCXX)
+  message(STATUS "Using libstdc++")
+elseif(USING_LIBCXX)
+  message(STATUS "Using libc++")
+elseif(USING_MSVC_STL)
+  message(STATUS "Using MSVC STL")
 endif()
 
 set_property(GLOBAL PROPERTY STDLIB_DETECTED TRUE)

@@ -19,7 +19,7 @@ option(incfontdisc_BUILD_TESTS "Build test executables for incplot-lib" ${PROJEC
 #####################################################################
 ### Staging ###
 #####################################################################
-include(cmake/StageOutputs.cmake)
+include(cmake/incom/StageOutputs.cmake)
 if(incfontdisc_STAGE_OUTPUTS)
     stageOutputDirsFor(incfontdisc)
 endif()

@@ -1,4 +1,4 @@
-include(cmake/CPM.cmake)
+include(cmake/lefticus/CPM.cmake)
 
 if(NOT CPM_USE_LOCAL_PACKAGES)
   set(CPM_USE_LOCAL_PACKAGES ON)
