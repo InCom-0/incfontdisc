@@ -28,8 +28,6 @@ endif()
 ########################################################
 ### Target specification ###
 ########################################################
-include(CMake_dependencies.cmake) ### Loads and declares the required external libraries using CPM or CMake's FetchContent.
-
 if(incfontdisc_BUILD_SHARED_LIB)
     add_library(incfontdisc SHARED)
 else()
@@ -106,7 +104,7 @@ endif()
 #####################################################################
 ### Installing, packaging ###
 #####################################################################
-if(BUILD_SHARED_LIBS)
+if(PROJECT_IS_TOP_LEVEL)
     install(
         TARGETS incfontdisc
         EXPORT incfontdisc_target
@@ -144,6 +142,6 @@ if(BUILD_SHARED_LIBS)
     )
 
 else()
-    message(STATUS "Installing incfontdisc is not available because it is being built as STATIC library")
-endif(BUILD_SHARED_LIBS)
+    # message(STATUS "Installing incfontdisc is not available because it is being built as STATIC library")
+endif()
 
